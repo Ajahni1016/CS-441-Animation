@@ -27,7 +27,7 @@ import 	java.lang.Math;
 
 public class CustomDrawing extends ApplicationAdapter {
 	SpriteBatch batch;
-//	Texture img;
+	//	Texture img;
 	TextureRegion img;
 	boolean touched;
 	private final Vector2 knobPercent = new Vector2();
@@ -40,33 +40,61 @@ public class CustomDrawing extends ApplicationAdapter {
 	boolean resetOnTouchUp = true;
 	Touchpad joystick;
 	ShapeRenderer circleRenderer;
-
+	/////////////////////////////////////////////
+	String spriteSheetPath = "data/baxter_down_walk.png";
+	private static final int FRAME_COLS = 4, FRAME_ROWS = 2; //The number of rows and columns in the sprite sheet
+	Animation<TextureRegion> walkAnimation;
+	Texture spriteSheet; //The image containing the sprite sheet
+	SpriteBatch spriteBatch;
+	float stateTime;
+	int num_ignored = 0; // How many sprite locations to ignore in the last row of the sheet (for if a sheet isn't completely filled)
 
 
 	@Override
 	public void create () {
+		spriteSheet = new Texture(Gdx.files.internal(spriteSheetPath));
+		TextureRegion[][] sprite = TextureRegion.split(spriteSheet,spriteSheet.getWidth()/FRAME_COLS, spriteSheet.getHeight()/FRAME_ROWS); //Splitting the sprite sheet into separate sprites based on the number of rows and columns compared to the size of the image itself
+		TextureRegion[] spriteFrames = new TextureRegion[FRAME_COLS*FRAME_ROWS];
+		int index = 0;
+		for(int i=0; i<FRAME_ROWS;i++){
+			for(int j=0; j<FRAME_COLS; j++){
+				// ADD LOGIC FOR NOT CONSIDERING THE LAST num_ignored SPRITES IN THE SHEET
+				spriteFrames[index++] = sprite[i][j]; //Putting the individual sprites into an array in the order they appear on the sheet
+			}
+		}
+		walkAnimation = new Animation<TextureRegion>((float)0.225, spriteFrames);
+		spriteBatch = new SpriteBatch();
+		stateTime = (float)0;
+		//////////////////////////////////////////////// Everything before the /'s are for the spritesheet. makes these a separate function.
 		batch = new SpriteBatch();
 //		img = new TextureRegion(new Texture(Gdx.files.internal("badlogic.jpg")));
 		batch.begin();
-		circleRenderer = new ShapeRenderer();
 	}
 
 	@Override
 	public void render () {
 		Gdx.gl.glClearColor( 122/255f, 2/255f, 92/255f, 1 );
 		Gdx.gl.glClear( GL20.GL_COLOR_BUFFER_BIT);
+		stateTime += Gdx.graphics.getDeltaTime();
 		createTouchpad();
 		create();
+
+		//move this to createSpriteAnimation?
+		TextureRegion currentFrame = walkAnimation.getKeyFrame(stateTime, true);
+		spriteBatch.begin();
+		spriteBatch.draw(currentFrame, 700, 200,500,500); // Draw current frame at (50, 50)
+		spriteBatch.end();
+
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
-		circleRenderer.begin(ShapeRenderer.ShapeType.Filled);
-		circleRenderer.circle((float)700, (float)500, 50);
-		circleRenderer.end();
+
 	}
 
 	@Override
 	public void dispose () {
 		batch.dispose();
+		spriteSheet.dispose();
+		spriteBatch.dispose();
 	}
 
 	@Override
