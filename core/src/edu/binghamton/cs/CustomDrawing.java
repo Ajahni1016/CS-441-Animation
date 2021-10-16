@@ -15,6 +15,8 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
+
+import java.util.ArrayList;
 import java.util.Random;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
@@ -33,6 +35,7 @@ public class CustomDrawing extends ApplicationAdapter {
 	private final Vector2 knobPercent = new Vector2();
 	Stage stage;
 	double x, y=50;
+	int bax_y=720;
 	float dx, dy;
 	Random rand = new Random();
 	float w, h;
@@ -45,16 +48,16 @@ public class CustomDrawing extends ApplicationAdapter {
 	private static final int FRAME_COLS = 4, FRAME_ROWS = 2; //The number of rows and columns in the sprite sheet
 	Animation<TextureRegion> walkAnimation;
 	Texture spriteSheet; //The image containing the sprite sheet
-	SpriteBatch spriteBatch;
 	float stateTime;
 	int num_ignored = 2; // How many sprite locations to ignore in the last row of the sheet (for if a sheet isn't completely filled)
+	ArrayList<SpriteBatch> enemies = new ArrayList();
 
 
 	@Override
 	public void create () {
 		createSpriteAnimation(num_ignored,50,50);
+		createSpriteAnimation(num_ignored,50,50);
 		batch = new SpriteBatch();
-//		img = new TextureRegion(new Texture(Gdx.files.internal("badlogic.jpg")));
 		batch.begin();
 		}
 
@@ -67,11 +70,18 @@ public class CustomDrawing extends ApplicationAdapter {
 
 
 		TextureRegion currentFrame = walkAnimation.getKeyFrame(stateTime, true);
-		spriteBatch.begin();
-		spriteBatch.draw(currentFrame, 700, 200,500,500); // Draw current frame at (50, 50)
-		spriteBatch.end();
-//		create(); //Calling create stopped sprite from animating
-		//move this to createSpriteAnimation?
+		bax_y-=2;
+		int x = 700;
+		for(SpriteBatch s:enemies){
+			s.begin();
+			s.draw(currentFrame, x, bax_y,500,500); // Draw Baxter
+			s.end();
+			x+=200;
+		}
+//		int x = (int)(Math.random() * ((stage.getWidth()) + 1));
+//		int y = (int)(Math.random() * ((stage.getHeight()) + 1));
+
+
 
 
 		stage.act(Gdx.graphics.getDeltaTime());
@@ -83,7 +93,9 @@ public class CustomDrawing extends ApplicationAdapter {
 	public void dispose () {
 		batch.dispose();
 		spriteSheet.dispose();
-		spriteBatch.dispose();
+		for(SpriteBatch s:enemies){
+			s.dispose();
+		}
 	}
 
 	@Override
@@ -170,8 +182,19 @@ public class CustomDrawing extends ApplicationAdapter {
 			}
 		}
 		walkAnimation = new Animation<TextureRegion>((float)0.225, spriteFrames);
-		spriteBatch = new SpriteBatch();
+		addEnemy();
 		stateTime = (float)0;
 	}
+	public void newPlayer(){
+		createSpriteAnimation(num_ignored,50,50);
+		SpriteBatch mc = new SpriteBatch();
+		mc.begin();
+		TextureRegion currentFrame = walkAnimation.getKeyFrame(stateTime, true);
+		mc.draw(currentFrame, 150, 150,500,500); // Draw player
+		mc.end();
+	}
 
+	public void addEnemy(){
+		enemies.add(new SpriteBatch());
+	}
 }
