@@ -47,7 +47,7 @@ public class CustomDrawing extends ApplicationAdapter {
 	Texture spriteSheet; //The image containing the sprite sheet
 	SpriteBatch spriteBatch;
 	float stateTime;
-	int num_ignored = 0; // How many sprite locations to ignore in the last row of the sheet (for if a sheet isn't completely filled)
+	int num_ignored = 2; // How many sprite locations to ignore in the last row of the sheet (for if a sheet isn't completely filled)
 
 
 	@Override
@@ -153,12 +153,20 @@ public class CustomDrawing extends ApplicationAdapter {
 	public void createSpriteAnimation(int num_ignored, int x, int y){
 		spriteSheet = new Texture(Gdx.files.internal(spriteSheetPath));
 		TextureRegion[][] sprite = TextureRegion.split(spriteSheet,spriteSheet.getWidth()/FRAME_COLS, spriteSheet.getHeight()/FRAME_ROWS); //Splitting the sprite sheet into separate sprites based on the number of rows and columns compared to the size of the image itself
-		TextureRegion[] spriteFrames = new TextureRegion[FRAME_COLS*FRAME_ROWS];
+		TextureRegion[] spriteFrames = new TextureRegion[FRAME_COLS*FRAME_ROWS-num_ignored];
 		int index = 0;
+		int remaining = FRAME_COLS-num_ignored;
 		for(int i=0; i<FRAME_ROWS;i++){
 			for(int j=0; j<FRAME_COLS; j++){
-				// ADD LOGIC FOR NOT CONSIDERING THE LAST num_ignored SPRITES IN THE SHEET
-				spriteFrames[index++] = sprite[i][j]; //Putting the individual sprites into an array in the order they appear on the sheet
+				if(i==FRAME_ROWS-1){ //If we're in the last row
+					if(remaining>0){
+						remaining--;
+						spriteFrames[index++] = sprite[i][j];
+					}
+				}
+				else {
+					spriteFrames[index++] = sprite[i][j]; //Putting the individual sprites into an array in the order they appear on the sheet
+				}
 			}
 		}
 		walkAnimation = new Animation<TextureRegion>((float)0.225, spriteFrames);
