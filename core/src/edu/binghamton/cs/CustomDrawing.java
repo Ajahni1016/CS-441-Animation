@@ -2,6 +2,7 @@ package edu.binghamton.cs;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -32,6 +33,7 @@ public class CustomDrawing extends ApplicationAdapter {
 	//	Texture img;
 	TextureRegion img;
 	boolean touched;
+	Player mc;
 	private final Vector2 knobPercent = new Vector2();
 	Stage stage;
 	double x, y=50;
@@ -44,32 +46,66 @@ public class CustomDrawing extends ApplicationAdapter {
 	Touchpad joystick;
 	ShapeRenderer circleRenderer;
 	/////////////////////////////////////////////
-	String spriteSheetPath = "data/baxter_down_walk.png";
+	String enemySpriteSheetPath = "data/baxter_down_walk.png";
+	String playerSpriteSheetPath = "data/player_down_walk.png";
 	private static final int FRAME_COLS = 4, FRAME_ROWS = 2; //The number of rows and columns in the sprite sheet
 	Animation<TextureRegion> walkAnimation;
 	Texture spriteSheet; //The image containing the sprite sheet
 	float stateTime;
 	int num_ignored = 2; // How many sprite locations to ignore in the last row of the sheet (for if a sheet isn't completely filled)
 	ArrayList<SpriteBatch> enemies = new ArrayList();
+	SpriteBatch mc_batch;
 
 
 	@Override
 	public void create () {
-		createSpriteAnimation(num_ignored,50,50);
-		createSpriteAnimation(num_ignored,50,50);
+		mc = new Player();
+		mc.animate(2, mc.down_walk, 2,4);
+		mc_batch = new SpriteBatch();
+		addEnemy();
+		addEnemy();
 		batch = new SpriteBatch();
 		batch.begin();
 		}
 
 	@Override
 	public void render () {
+		//Input processing
+		if(Gdx.input.isKeyPressed(Input.Keys.DPAD_UP)){
+			mc.x_pos -= 2;
+			mc.dir = "up";
+		}
+		if(Gdx.input.isKeyPressed(Input.Keys.DPAD_DOWN)){
+			mc.dir = "down";
+			mc.x_pos += 2;
+		}
+		if(Gdx.input.isKeyPressed(Input.Keys.DPAD_RIGHT)){
+			mc.y_pos += 2;
+			mc.dir = "right";
+		}
+		if(Gdx.input.isKeyPressed(Input.Keys.DPAD_LEFT)){
+			mc.dir = "left";
+			mc.y_pos -= 2;
+		}
+
+
+		//Setup stuff
 		Gdx.gl.glClearColor( 122/255f, 2/255f, 92/255f, 1 );
 		Gdx.gl.glClear( GL20.GL_COLOR_BUFFER_BIT);
 		stateTime += Gdx.graphics.getDeltaTime();
-		createTouchpad();
+		mc.stateTime += Gdx.graphics.getDeltaTime();
+		//createTouchpad();
 
+		//player
+		TextureRegion mcCurrentFrame = mc.walkAnimation.getKeyFrame(mc.stateTime, true); //enemy
+		mc_batch.begin();
+		mc_batch.draw(mcCurrentFrame, mc.x_pos, mc.y_pos,500,500);
+		mc_batch.end();
 
-		TextureRegion currentFrame = walkAnimation.getKeyFrame(stateTime, true);
+		//enemy
+		//int x = (int)(Math.random() * ((stage.getWidth()) + 1));
+		//int y = (int)(Math.random() * ((stage.getHeight()) + 1));
+		TextureRegion currentFrame = walkAnimation.getKeyFrame(stateTime, true); //enemy
 		bax_y-=2;
 		int x = 700;
 		for(SpriteBatch s:enemies){
@@ -78,14 +114,12 @@ public class CustomDrawing extends ApplicationAdapter {
 			s.end();
 			x+=200;
 		}
-//		int x = (int)(Math.random() * ((stage.getWidth()) + 1));
-//		int y = (int)(Math.random() * ((stage.getHeight()) + 1));
 
 
 
-
-		stage.act(Gdx.graphics.getDeltaTime());
-		stage.draw();
+		//Touchpad
+//		stage.act(Gdx.graphics.getDeltaTime());
+//		stage.draw();
 
 	}
 
@@ -162,8 +196,8 @@ public class CustomDrawing extends ApplicationAdapter {
 		});
 	}
 
-	public void createSpriteAnimation(int num_ignored, int x, int y){
-		spriteSheet = new Texture(Gdx.files.internal(spriteSheetPath));
+	public void createSpriteAnimation(int num_ignored, int x, int y, String path){
+		spriteSheet = new Texture(Gdx.files.internal(path));
 		TextureRegion[][] sprite = TextureRegion.split(spriteSheet,spriteSheet.getWidth()/FRAME_COLS, spriteSheet.getHeight()/FRAME_ROWS); //Splitting the sprite sheet into separate sprites based on the number of rows and columns compared to the size of the image itself
 		TextureRegion[] spriteFrames = new TextureRegion[FRAME_COLS*FRAME_ROWS-num_ignored];
 		int index = 0;
@@ -182,19 +216,11 @@ public class CustomDrawing extends ApplicationAdapter {
 			}
 		}
 		walkAnimation = new Animation<TextureRegion>((float)0.225, spriteFrames);
-		addEnemy();
 		stateTime = (float)0;
-	}
-	public void newPlayer(){
-		createSpriteAnimation(num_ignored,50,50);
-		SpriteBatch mc = new SpriteBatch();
-		mc.begin();
-		TextureRegion currentFrame = walkAnimation.getKeyFrame(stateTime, true);
-		mc.draw(currentFrame, 150, 150,500,500); // Draw player
-		mc.end();
 	}
 
 	public void addEnemy(){
+		createSpriteAnimation(num_ignored,50,50,enemySpriteSheetPath);
 		enemies.add(new SpriteBatch());
 	}
 }
