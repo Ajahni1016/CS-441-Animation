@@ -45,6 +45,7 @@ public class CustomDrawing extends ApplicationAdapter {
 	private final Vector2 knobPosition = new Vector2();
 	boolean resetOnTouchUp = true;
 	Touchpad joystick;
+	String shoot_projectile = "no";
 	ShapeRenderer circleRenderer;
 	/////////////////////////////////////////////
 	String enemySpriteSheetPath = "data/baxter_down_walk.png";
@@ -54,6 +55,7 @@ public class CustomDrawing extends ApplicationAdapter {
 	float stateTime;
 	int num_ignored = 2; // How many sprite locations to ignore in the last row of the sheet (for if a sheet isn't completely filled)
 	ArrayList<SpriteBatch> enemies = new ArrayList();
+	ArrayList<Player.Projectile> projectiles = new ArrayList();
 	SpriteBatch mc_batch;
 	TextureRegion mcCurrentFrame;
 
@@ -74,6 +76,11 @@ public class CustomDrawing extends ApplicationAdapter {
 		Gdx.gl.glClear( GL20.GL_COLOR_BUFFER_BIT);
 		stateTime += Gdx.graphics.getDeltaTime();
 		mc.stateTime += Gdx.graphics.getDeltaTime();
+
+		if(shoot_projectile=="yes"){
+			addProjectile();
+			shoot_projectile = "no";
+		}
 
 		//Input processing
 		if(Gdx.input.isKeyPressed(Input.Keys.DPAD_RIGHT)){
@@ -120,7 +127,9 @@ public class CustomDrawing extends ApplicationAdapter {
 
 
 		if(Gdx.input.isKeyPressed(Input.Keys.SPACE)){
-			//SHOOT
+			Player.Projectile book = new Player.Projectile();
+			shoot_projectile = "yes";
+
 		}
 
 		//createTouchpad();
@@ -138,6 +147,13 @@ public class CustomDrawing extends ApplicationAdapter {
 			x+=200;
 		}
 
+		for(Player.Projectile p:projectiles){
+			p.batch.begin();
+			p.batch.draw(p.book,p.x,p.y,150,150 ); // Draw Baxter
+			p.batch.end();
+			p.x+=2;
+		}
+
 		//Touchpad
 //		stage.act(Gdx.graphics.getDeltaTime());
 //		stage.draw();
@@ -150,6 +166,10 @@ public class CustomDrawing extends ApplicationAdapter {
 		spriteSheet.dispose();
 		for(SpriteBatch s:enemies){
 			s.dispose();
+		}
+
+		for(Player.Projectile p:projectiles){
+			p.batch.dispose();
 		}
 	}
 
@@ -217,7 +237,7 @@ public class CustomDrawing extends ApplicationAdapter {
 		});
 	}
 
-	public void createSpriteAnimation(int num_ignored, int x, int y, String path){
+	public void createSpriteAnimation(int num_ignored, String path){
 		spriteSheet = new Texture(Gdx.files.internal(path));
 		TextureRegion[][] sprite = TextureRegion.split(spriteSheet,spriteSheet.getWidth()/FRAME_COLS, spriteSheet.getHeight()/FRAME_ROWS); //Splitting the sprite sheet into separate sprites based on the number of rows and columns compared to the size of the image itself
 		TextureRegion[] spriteFrames = new TextureRegion[FRAME_COLS*FRAME_ROWS-num_ignored];
@@ -241,7 +261,11 @@ public class CustomDrawing extends ApplicationAdapter {
 	}
 
 	public void addEnemy(){
-		createSpriteAnimation(num_ignored,50,50,enemySpriteSheetPath);
+		createSpriteAnimation(num_ignored,enemySpriteSheetPath);
 		enemies.add(new SpriteBatch());
+	}
+
+	public void addProjectile(){
+		projectiles.add(new Player.Projectile());
 	}
 }

@@ -16,8 +16,8 @@ public class Player {
     Animation<TextureRegion> leftWalkAnimation;
     Animation<TextureRegion> downWalkAnimation;
     Animation<TextureRegion> rightWalkAnimation;
-    int x_pos=50;
-    int y_pos=50;
+    static int x_pos=50;
+    static int y_pos=50;
     float stateTime;
 
     //SPRITES
@@ -37,7 +37,7 @@ public class Player {
         spriteList.add(down_walk);
         spriteList.add(side_walk);
         Texture upSpriteSheet = new Texture(Gdx.files.internal(spriteList.get(0)));
-        Texture rightSpriteSheet = new Texture(Gdx.files.internal(spriteList.get(2)));;
+        Texture rightSpriteSheet = new Texture(Gdx.files.internal(spriteList.get(2)));
         Texture leftSpriteSheet = new Texture(Gdx.files.internal(spriteList.get(2)));
         Texture downSpriteSheet = new Texture(Gdx.files.internal(spriteList.get(1)));
 
@@ -89,6 +89,19 @@ public class Player {
         this.upWalkAnimation = new Animation<TextureRegion>((float)0.225, upSpriteFrames);
         this.rightWalkAnimation = new Animation<TextureRegion>((float)0.225, rightSpriteFrames);
         this.stateTime = (float)0;
+    }
+
+
+
+
+    public static class Projectile{
+        int x = Player.x_pos+300;
+        int y = Player.y_pos+150;
+        SpriteBatch batch = new SpriteBatch();
+        Texture book = new Texture(Gdx.files.internal("data/book.png"));
+
+
+
     }
 }
 
