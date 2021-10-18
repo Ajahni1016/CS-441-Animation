@@ -66,6 +66,7 @@ public class CustomDrawing extends ApplicationAdapter {
 		mc_batch = new SpriteBatch();
 		addEnemy();
 		addEnemy();
+		addEnemy();
 		batch = new SpriteBatch();
 		batch.begin();
 		}
@@ -76,11 +77,6 @@ public class CustomDrawing extends ApplicationAdapter {
 		Gdx.gl.glClear( GL20.GL_COLOR_BUFFER_BIT);
 		stateTime += Gdx.graphics.getDeltaTime();
 		mc.stateTime += Gdx.graphics.getDeltaTime();
-
-		if(shoot_projectile=="yes"){
-			addProjectile();
-			shoot_projectile = "no";
-		}
 
 		//Input processing
 		if(Gdx.input.isKeyPressed(Input.Keys.DPAD_RIGHT)){
@@ -99,7 +95,7 @@ public class CustomDrawing extends ApplicationAdapter {
 			mc.dir = "left";
 			mc.x_pos -= 2;
 		}
-			//Idle motion if I get to that point
+			//Idle animation would go here when I add it
 			if(mc.dir=="up"){
 				mcCurrentFrame = mc.upWalkAnimation.getKeyFrame(mc.stateTime, true);
 				mc_batch.begin();
@@ -125,11 +121,8 @@ public class CustomDrawing extends ApplicationAdapter {
 				mc_batch.end();
 			}
 
-
 		if(Gdx.input.isKeyPressed(Input.Keys.SPACE)){
-			Player.Projectile book = new Player.Projectile();
-			shoot_projectile = "yes";
-
+			addProjectile();
 		}
 
 		//createTouchpad();
@@ -138,8 +131,21 @@ public class CustomDrawing extends ApplicationAdapter {
 		//int x = (int)(Math.random() * ((stage.getWidth()) + 1));
 		//int y = (int)(Math.random() * ((stage.getHeight()) + 1));
 		TextureRegion currentFrame = walkAnimation.getKeyFrame(stateTime, true); //enemy
-		bax_y-=2;
 		int x = 700;
+		int going_down = 1;
+		if(bax_y>=h){
+			going_down = 1;
+		}
+		if (bax_y <= 0){
+			going_down = 0;
+		}
+
+		if(going_down==1){
+			bax_y-=2;
+		}
+		else{
+			bax_y+=2;
+		}
 		for(SpriteBatch s:enemies){
 			s.begin();
 			s.draw(currentFrame, x, bax_y,500,500); // Draw Baxter
@@ -149,9 +155,21 @@ public class CustomDrawing extends ApplicationAdapter {
 
 		for(Player.Projectile p:projectiles){
 			p.batch.begin();
-			p.batch.draw(p.book,p.x,p.y,150,150 ); // Draw Baxter
+			p.batch.draw(p.book,p.x,p.y,150,150 ); // Draw Book
 			p.batch.end();
-			p.x+=2;
+			p.timer--;
+			if(p.shoot_dir=="up"){
+				p.y+=5;
+			}
+			else if(p.shoot_dir=="down"){
+				p.y-=5;
+			}
+			else if(p.shoot_dir=="left"){
+				p.x-=5;
+			}
+			else if(p.shoot_dir=="right"){
+				p.x+=5;
+			}
 		}
 
 		//Touchpad
@@ -167,7 +185,6 @@ public class CustomDrawing extends ApplicationAdapter {
 		for(SpriteBatch s:enemies){
 			s.dispose();
 		}
-
 		for(Player.Projectile p:projectiles){
 			p.batch.dispose();
 		}
@@ -266,6 +283,7 @@ public class CustomDrawing extends ApplicationAdapter {
 	}
 
 	public void addProjectile(){
-		projectiles.add(new Player.Projectile());
+		projectiles.add(new Player.Projectile(mc.dir));
+		System.out.println("Pressed spacebar");
 	}
 }

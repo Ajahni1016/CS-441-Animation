@@ -10,8 +10,6 @@ import java.util.ArrayList;
 
 public class Player {
     String dir = "down";
-    String in_motion = "no";
-    private static final int FRAME_COLS = 4, FRAME_ROWS = 2; //The number of rows and columns in the sprite sheet
     Animation<TextureRegion> upWalkAnimation;
     Animation<TextureRegion> leftWalkAnimation;
     Animation<TextureRegion> downWalkAnimation;
@@ -95,11 +93,16 @@ public class Player {
 
 
     public static class Projectile{
-        int x = Player.x_pos+300;
+        String shoot_dir;
+        int timer=100;
+        int x = Player.x_pos+150;
         int y = Player.y_pos+150;
         SpriteBatch batch = new SpriteBatch();
         Texture book = new Texture(Gdx.files.internal("data/book.png"));
 
+        Projectile(String d){
+            shoot_dir = d;
+        }
 
 
     }
