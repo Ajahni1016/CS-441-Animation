@@ -40,6 +40,7 @@ public class CustomDrawing extends ApplicationAdapter {
 	int bax_y=720;
 	float dx, dy;
 	Random rand = new Random();
+	int alreadyRight = 0;
 	float w, h;
 	private final Vector2 knobPosition = new Vector2();
 	boolean resetOnTouchUp = true;
@@ -47,7 +48,6 @@ public class CustomDrawing extends ApplicationAdapter {
 	ShapeRenderer circleRenderer;
 	/////////////////////////////////////////////
 	String enemySpriteSheetPath = "data/baxter_down_walk.png";
-	String playerSpriteSheetPath = "data/player_down_walk.png";
 	private static final int FRAME_COLS = 4, FRAME_ROWS = 2; //The number of rows and columns in the sprite sheet
 	Animation<TextureRegion> walkAnimation;
 	Texture spriteSheet; //The image containing the sprite sheet
@@ -55,12 +55,12 @@ public class CustomDrawing extends ApplicationAdapter {
 	int num_ignored = 2; // How many sprite locations to ignore in the last row of the sheet (for if a sheet isn't completely filled)
 	ArrayList<SpriteBatch> enemies = new ArrayList();
 	SpriteBatch mc_batch;
-
+	TextureRegion mcCurrentFrame;
 
 	@Override
 	public void create () {
 		mc = new Player();
-		mc.animate(2, mc.down_walk, 2,4);
+		mc.animate(2, 2,4);
 		mc_batch = new SpriteBatch();
 		addEnemy();
 		addEnemy();
@@ -70,37 +70,60 @@ public class CustomDrawing extends ApplicationAdapter {
 
 	@Override
 	public void render () {
-		//Input processing
-		if(Gdx.input.isKeyPressed(Input.Keys.DPAD_UP)){
-			mc.x_pos -= 2;
-			mc.dir = "up";
-		}
-		if(Gdx.input.isKeyPressed(Input.Keys.DPAD_DOWN)){
-			mc.dir = "down";
-			mc.x_pos += 2;
-		}
-		if(Gdx.input.isKeyPressed(Input.Keys.DPAD_RIGHT)){
-			mc.y_pos += 2;
-			mc.dir = "right";
-		}
-		if(Gdx.input.isKeyPressed(Input.Keys.DPAD_LEFT)){
-			mc.dir = "left";
-			mc.y_pos -= 2;
-		}
-
-
-		//Setup stuff
 		Gdx.gl.glClearColor( 122/255f, 2/255f, 92/255f, 1 );
 		Gdx.gl.glClear( GL20.GL_COLOR_BUFFER_BIT);
 		stateTime += Gdx.graphics.getDeltaTime();
 		mc.stateTime += Gdx.graphics.getDeltaTime();
-		//createTouchpad();
 
-		//player
-		TextureRegion mcCurrentFrame = mc.walkAnimation.getKeyFrame(mc.stateTime, true); //enemy
-		mc_batch.begin();
-		mc_batch.draw(mcCurrentFrame, mc.x_pos, mc.y_pos,500,500);
-		mc_batch.end();
+		//Input processing
+		if(Gdx.input.isKeyPressed(Input.Keys.DPAD_RIGHT)){
+			mc.y_pos += 2;
+			mc.dir = "up";
+		}
+		else if(Gdx.input.isKeyPressed(Input.Keys.DPAD_LEFT)){
+			mc.dir = "down";
+			mc.y_pos -= 2;
+		}
+		else if(Gdx.input.isKeyPressed(Input.Keys.DPAD_DOWN)){
+			mc.x_pos += 2;
+			mc.dir = "right";
+		}
+		else if(Gdx.input.isKeyPressed(Input.Keys.DPAD_UP)){
+			mc.dir = "left";
+			mc.x_pos -= 2;
+		}
+			//Idle motion if I get to that point
+			if(mc.dir=="up"){
+				mcCurrentFrame = mc.upWalkAnimation.getKeyFrame(mc.stateTime, true);
+				mc_batch.begin();
+				mc_batch.draw(mcCurrentFrame, mc.x_pos, mc.y_pos,500,500);
+				mc_batch.end();
+			}
+			else if(mc.dir=="down"){
+				mcCurrentFrame = mc.downWalkAnimation.getKeyFrame(mc.stateTime, true);
+				mc_batch.begin();
+				mc_batch.draw(mcCurrentFrame, mc.x_pos, mc.y_pos,500,500);
+				mc_batch.end();
+			}
+			else if(mc.dir=="left"){
+				mcCurrentFrame = mc.leftWalkAnimation.getKeyFrame(mc.stateTime, true);
+				mc_batch.begin();
+				mc_batch.draw(mcCurrentFrame, mc.x_pos, mc.y_pos,500,500);
+				mc_batch.end();
+			}
+			if(mc.dir=="right"){
+				mcCurrentFrame = mc.rightWalkAnimation.getKeyFrame(mc.stateTime, true);
+				mc_batch.begin();
+				mc_batch.draw(mcCurrentFrame, mc.x_pos, mc.y_pos,500,500);
+				mc_batch.end();
+			}
+
+
+		if(Gdx.input.isKeyPressed(Input.Keys.SPACE)){
+			//SHOOT
+		}
+
+		//createTouchpad();
 
 		//enemy
 		//int x = (int)(Math.random() * ((stage.getWidth()) + 1));
@@ -114,8 +137,6 @@ public class CustomDrawing extends ApplicationAdapter {
 			s.end();
 			x+=200;
 		}
-
-
 
 		//Touchpad
 //		stage.act(Gdx.graphics.getDeltaTime());
