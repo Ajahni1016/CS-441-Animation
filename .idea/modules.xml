@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/CS-441-Animation.iml" filepath="$PROJECT_DIR$/.idea/modules/CS-441-Animation.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/android/CS-441-Animation.android.iml" filepath="$PROJECT_DIR$/.idea/modules/android/CS-441-Animation.android.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/CS-441-Animation.core.iml" filepath="$PROJECT_DIR$/.idea/modules/core/CS-441-Animation.core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/CS-441-Bax-Attack.iml" filepath="$PROJECT_DIR$/.idea/modules/CS-441-Bax-Attack.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/android/CS-441-Bax-Attack.android.iml" filepath="$PROJECT_DIR$/.idea/modules/android/CS-441-Bax-Attack.android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/CS-441-Bax-Attack.core.iml" filepath="$PROJECT_DIR$/.idea/modules/core/CS-441-Bax-Attack.core.iml" />
     </modules>
   </component>
 </project>

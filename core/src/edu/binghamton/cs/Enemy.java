@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import java.util.ArrayList;
 
-public class Player {
+public class Enemy {
     String dir = "down";
     Animation<TextureRegion> upWalkAnimation;
     Animation<TextureRegion> leftWalkAnimation;
@@ -87,23 +87,5 @@ public class Player {
         this.upWalkAnimation = new Animation<TextureRegion>((float)0.225, upSpriteFrames);
         this.rightWalkAnimation = new Animation<TextureRegion>((float)0.225, rightSpriteFrames);
         this.stateTime = (float)0;
-    }
-
-
-
-
-    public static class Projectile{
-        String shoot_dir;
-        int timer=100;
-        int x = Player.x_pos+150;
-        int y = Player.y_pos+150;
-        SpriteBatch batch = new SpriteBatch();
-        Texture book = new Texture(Gdx.files.internal("data/book.png"));
-
-        Projectile(String d){
-            shoot_dir = d;
-        }
-
-
     }
 }

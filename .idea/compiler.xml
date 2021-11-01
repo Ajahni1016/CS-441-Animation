@@ -3,6 +3,7 @@
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel target="1.7">
       <module name="CS-441-Animation.android" target="11" />
+      <module name="CS-441-Bax-Attack.android" target="11" />
     </bytecodeTargetLevel>
   </component>
 </project>

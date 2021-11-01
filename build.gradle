@@ -9,7 +9,7 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.0.2'
+        classpath 'com.android.tools.build:gradle:3.5.4'
         
 
     }
@@ -20,7 +20,7 @@ allprojects {
 
     version = '1.0'
     ext {
-        appName = "Custom Drawing"
+        appName = "Bax Attack"
         gdxVersion = '1.10.0'
         roboVMVersion = '2.3.12'
         box2DLightsVersion = '1.5'
