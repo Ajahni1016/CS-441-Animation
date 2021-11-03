@@ -23,7 +23,7 @@ public class Enemy {
     ArrayList<String> spriteList = new ArrayList();
     // Walking Sprites
     String up_walk = "data/player_up_walk.png";
-    String down_walk = "data/player_down_walk.png";
+    String down_walk = "data/baxter_down_walk.png";
     String side_walk = "data/player_side_walk.png";
     // Idle Sprites
     // Equip Sprites
